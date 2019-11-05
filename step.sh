@@ -9,6 +9,22 @@ upload_test_response="$(curl -u $browserstack_username:$browserstack_access_key 
 test_url=$(echo "$upload_test_response" | jq .test_url)
 
 echo "starting automated tests"
+payload=""
+[[ -n "$browserstack_package" ]] && payload="$payload package: \$package,"
+[[ -n "$browserstack_class" ]] && payload="$payload class: \$class,"
+[[ -n "$browserstack_annotation" ]] && payload="$payload annotation: \$annotation,"
+[[ -n "$browserstack_size" ]] && payload="$payload size: \$size,"
+[[ -n "$browserstack_device_logs" ]] && payload="$payload logs: \$logs,"
+[[ -n "$browserstack_video" ]] && payload="$payload video: \$video,"
+[[ -n "$browserstack_local" ]] && payload="$payload local: \$loc,"
+[[ -n "$browserstack_local_identifier" ]] && payload="$payload localIdentifier: \$locId,"
+[[ -n "$browserstack_gps_location" ]] && payload="$payload gpsLocation: \$gpsLocation,"
+[[ -n "$browserstack_language" ]] && payload="$payload language: \$language,"
+[[ -n "$browserstack_locale" ]] && payload="$payload locale: \$locale,"
+[[ -n "$callback_url" ]] && payload="$payload callbackURL: \$callback,"
+
+payload="$payload app: \$app_url, testSuite: \$test_url, devices: \$devices"
+
 json=$( jq -n \
                 --argjson app_url $app_url \
                 --argjson test_url $test_url \
@@ -25,7 +41,7 @@ json=$( jq -n \
                 --arg language "$browserstack_language" \
                 --arg locale "$browserstack_locale" \
                 --arg callback "$callback_url" \
-                '{devices: $devices, app: $app_url, testSuite: $test_url, package: $package, class: $class, annotation: $annotation, size: $size, logs: $logs, video: $video, local: $loc, localIdentifier: $locId, gpsLocation: $gpsLocation, language: $language, locale: $locale, callbackURL: $callback}')
+                "{ $payload }")
 run_test_response="$(curl -X POST https://api-cloud.browserstack.com/app-automate/espresso/build -d \ "$json" -H "Content-Type: application/json" -u "$browserstack_username:$browserstack_access_key")"
 build_id=$(echo "$run_test_response" | jq .build_id | envman add --key BROWSERSTACK_BUILD_ID)
 
