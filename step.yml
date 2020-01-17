@@ -191,6 +191,13 @@ inputs:
       summary: Set the callback url where we can send a confirmation once your test execution is completed
       is_expand: false
       is_required: false
+  - project_notify_url: 
+    opts:
+      title: Project Notify Url
+      category: Automated Test Options
+      summary: Set the callback url to notify when all jobs for the given project are completed
+      is_expand: false
+      is_required: false
 outputs:
   - BUILD_ID:
     opts:
