@@ -22,6 +22,7 @@ payload=""
 [[ -n "$browserstack_language" ]] && payload="$payload language: \$language,"
 [[ -n "$browserstack_locale" ]] && payload="$payload locale: \$locale,"
 [[ -n "$callback_url" ]] && payload="$payload callbackURL: \$callback,"
+[[ -n "$browserstack_project" ]] && payload="$payload project: \$project,"
 [[ -n "$project_notify_url" ]] && payload="$payload projectNotifyURL: \$projectNotifyURL,"
 
 payload="$payload app: \$app_url, testSuite: \$test_url, devices: \$devices"
@@ -43,6 +44,7 @@ json=$( jq -n \
                 --arg locale "$browserstack_locale" \
                 --arg callback "$callback_url" \
                 --arg projectNotifyURL "$project_notify_url" \
+                --arg project "$browserstack_project" \
                 "{ $payload }")
 run_test_response="$(curl -X POST https://api-cloud.browserstack.com/app-automate/espresso/build -d \ "$json" -H "Content-Type: application/json" -u "$browserstack_username:$browserstack_access_key")"
 build_id=$(echo "$run_test_response" | jq .build_id | envman add --key BROWSERSTACK_BUILD_ID)
