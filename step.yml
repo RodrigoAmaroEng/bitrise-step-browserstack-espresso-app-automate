@@ -191,7 +191,7 @@ inputs:
       summary: Set the callback url where we can send a confirmation once your test execution is completed
       is_expand: false
       is_required: false
-  - project: 
+  - browserstack_project: 
     opts:
       title: Browserstack Project Key
       category: Automated Test Options
